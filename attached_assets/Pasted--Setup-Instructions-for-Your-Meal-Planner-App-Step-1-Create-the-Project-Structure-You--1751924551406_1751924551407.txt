@@ -1,0 +1,129 @@
+# 🚀 Setup Instructions for Your Meal Planner App
+
+## Step 1: Create the Project Structure
+
+You need to create all these files and folders in your Replit project. Here's what to do:
+
+### 1. Create the root project files:
+Copy these files to your main directory:
+- `package.json` (main project dependencies)
+- `server.js` (main server file)
+- `.gitignore` (git ignore file)
+- `.env.example` (environment template)
+- `README.md` (project documentation)
+
+### 2. Create the server directory structure:
+```
+server/
+├── config/
+│   └── database.js
+├── models/
+├── routes/
+├── controllers/
+├── middleware/
+├── services/
+├── utils/
+└── database/
+```
+
+### 3. Create the client directory structure:
+```
+client/
+├── public/
+│   └── index.html
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── utils/
+│   ├── hooks/
+│   ├── context/
+│   ├── App.js
+│   ├── App.css
+│   ├── index.js
+│   └── index.css
+├── package.json
+└── tailwind.config.js
+```
+
+## Step 2: Set up Environment Variables
+
+1. **Copy `.env.example` to `.env`:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edit the `.env` file** with your settings:
+   ```env
+   PORT=3001
+   NODE_ENV=development
+   DB_PATH=./server/database/meal_planner.db
+   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+   JWT_EXPIRE=7d
+   CLIENT_URL=http://localhost:3000
+   API_URL=http://localhost:3001/api
+   BCRYPT_ROUNDS=12
+   ```
+
+## Step 3: Install Dependencies
+
+Run these commands in your Replit shell:
+
+```bash
+# Install server dependencies
+npm install
+
+# Install client dependencies
+cd client
+npm install
+cd ..
+```
+
+## Step 4: Create Missing Files
+
+You'll need to create these essential files. I'll provide them in the next artifacts:
+
+### Authentication Context (client/src/context/AuthContext.js)
+### API Service (client/src/services/api.js)
+### Basic Auth Components
+### Error Handler Middleware
+### Basic Routes
+
+## Step 5: Start the Development Server
+
+```bash
+# Start both server and client
+npm run dev
+```
+
+This will start:
+- Backend server on port 3001
+- Frontend client on port 3000
+
+## Step 6: Test the Setup
+
+1. Visit `http://localhost:3000` in your browser
+2. You should see the initial loading screen
+3. Check the console for any errors
+
+## Next Steps After Setup
+
+1. **Phase 1**: Complete the authentication system
+2. **Phase 2**: Add basic recipe management
+3. **Phase 3**: Implement pantry functionality
+4. **Phase 4**: Build recommendation algorithm
+
+## Troubleshooting
+
+### Common Issues:
+- **Port conflicts**: Make sure ports 3000 and 3001 are available
+- **Database errors**: The database will be created automatically
+- **Module not found**: Run `npm install` in both root and client directories
+- **CORS errors**: Check that CLIENT_URL in .env matches your frontend URL
+
+### Getting Help:
+- Check the browser console for errors
+- Look at the server logs in the terminal
+- Verify all files are in the correct locations
+
+Let me know when you've completed these steps and I'll help you with the next phase!
