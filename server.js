@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -33,6 +32,25 @@ app.use(express.urlencoded({ extended: true }));
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Meal Planner API is running' });
+});
+
+// Import routes
+const authRoutes = require('./server/routes/auth');
+
+// Use routes
+app.use('/api/auth', authRoutes);
+
+// Basic route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: '🍽️ Meal Planner API', 
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      recipes: '/api/recipes',
+      pantry: '/api/pantry'
+    }
+  });
 });
 
 // API routes will be added here
@@ -83,10 +101,4 @@ process.on('SIGTERM', async () => {
   console.log('\n👋 Shutting down gracefully...');
   await database.close();
   process.exit(0);
-});
-
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
