@@ -36,9 +36,11 @@ app.get('/health', (req, res) => {
 
 // Import routes
 const authRoutes = require('./server/routes/auth');
+const recipesRoutes = require('./server/routes/recipes');
 
 // Use routes
 app.use('/api/auth', authRoutes);
+app.use('/api/recipes', recipesRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

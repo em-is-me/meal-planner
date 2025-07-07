@@ -1,0 +1,125 @@
+
+const express = require('express');
+const database = require('../config/database');
+const auth = require('../middleware/auth');
+const router = express.Router();
+
+// Get all recipes for user
+router.get('/', auth, (req, res) => {
+  const db = database.getDb();
+  
+  db.all(
+    'SELECT * FROM recipes WHERE user_id = ? ORDER BY created_at DESC',
+    [req.user.userId],
+    (err, recipes) => {
+      if (err) {
+        return res.status(500).json({ message: 'Database error' });
+      }
+      res.json({ recipes });
+    }
+  );
+});
+
+// Get single recipe
+router.get('/:id', auth, (req, res) => {
+  const db = database.getDb();
+  
+  db.get(
+    'SELECT * FROM recipes WHERE id = ? AND user_id = ?',
+    [req.params.id, req.user.userId],
+    (err, recipe) => {
+      if (err) {
+        return res.status(500).json({ message: 'Database error' });
+      }
+      if (!recipe) {
+        return res.status(404).json({ message: 'Recipe not found' });
+      }
+      res.json({ recipe });
+    }
+  );
+});
+
+// Create recipe
+router.post('/', auth, (req, res) => {
+  const { title, description, ingredients, instructions, prep_time, cook_time, servings, difficulty, cuisine, tags, nutrition_info, image_url } = req.body;
+
+  if (!title || !ingredients || !instructions) {
+    return res.status(400).json({ message: 'Title, ingredients, and instructions are required' });
+  }
+
+  const db = database.getDb();
+  
+  db.run(
+    `INSERT INTO recipes (user_id, title, description, ingredients, instructions, prep_time, cook_time, servings, difficulty, cuisine, tags, nutrition_info, image_url)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [req.user.userId, title, description, ingredients, instructions, prep_time, cook_time, servings, difficulty, cuisine, tags, nutrition_info, image_url],
+    function(err) {
+      if (err) {
+        return res.status(500).json({ message: 'Error creating recipe' });
+      }
+      res.status(201).json({
+        message: 'Recipe created successfully',
+        recipe: { 
+          id: this.lastID, 
+          title, 
+          description, 
+          ingredients, 
+          instructions, 
+          prep_time, 
+          cook_time, 
+          servings,
+          difficulty,
+          cuisine,
+          tags,
+          nutrition_info,
+          image_url
+        }
+      });
+    }
+  );
+});
+
+// Update recipe
+router.put('/:id', auth, (req, res) => {
+  const { title, description, ingredients, instructions, prep_time, cook_time, servings, difficulty, cuisine, tags, nutrition_info, image_url } = req.body;
+
+  const db = database.getDb();
+  
+  db.run(
+    `UPDATE recipes SET title = ?, description = ?, ingredients = ?, instructions = ?, 
+     prep_time = ?, cook_time = ?, servings = ?, difficulty = ?, cuisine = ?, tags = ?, 
+     nutrition_info = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP
+     WHERE id = ? AND user_id = ?`,
+    [title, description, ingredients, instructions, prep_time, cook_time, servings, difficulty, cuisine, tags, nutrition_info, image_url, req.params.id, req.user.userId],
+    function(err) {
+      if (err) {
+        return res.status(500).json({ message: 'Error updating recipe' });
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ message: 'Recipe not found' });
+      }
+      res.json({ message: 'Recipe updated successfully' });
+    }
+  );
+});
+
+// Delete recipe
+router.delete('/:id', auth, (req, res) => {
+  const db = database.getDb();
+  
+  db.run(
+    'DELETE FROM recipes WHERE id = ? AND user_id = ?',
+    [req.params.id, req.user.userId],
+    function(err) {
+      if (err) {
+        return res.status(500).json({ message: 'Error deleting recipe' });
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ message: 'Recipe not found' });
+      }
+      res.json({ message: 'Recipe deleted successfully' });
+    }
+  );
+});
+
+module.exports = router;
