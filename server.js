@@ -37,10 +37,12 @@ app.get('/health', (req, res) => {
 // Import routes
 const authRoutes = require('./server/routes/auth');
 const recipesRoutes = require('./server/routes/recipes');
+const pantryRoutes = require('./server/routes/pantry');
 
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipesRoutes);
+app.use('/api/pantry', pantryRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
